@@ -6,8 +6,8 @@ use JSON;
 use Digest::MD5 qw(md5_hex);
 use Data::Dumper;
 
-my $username = 'my-user-name';
-my $password = '286755fad04869ca523320acce0dc6a4'; # md5sum
+my $username = 'username';
+my $password = md5_hex('password'); # md5sum
 my $dbfile = '/path/to/koreader.db';
 
 # Schema:
@@ -27,7 +27,7 @@ my $content = {};
 
 my $rawpath = $ENV{'REQUEST_URI'};
 my $path;
-if($rawpath =~ /^\/koreader.pl(\/.*)$/) {
+if($rawpath =~ /\/koreader.pl(\/.*)$/) {
   $path = $1;
 }
 
@@ -106,7 +106,7 @@ print to_json($content, {pretty => 1});
 sub auth_user {
   my $xuser = $ENV{'HTTP_X_AUTH_USER'};
   my $xkey = $ENV{'HTTP_X_AUTH_KEY'};
-  if($xuser eq $username && $xkey eq $password){
+  if($xuser eq $username && lc($xkey) eq lc($password)){
     return 1;
   }
   return 0;
